@@ -79,99 +79,96 @@
                     <tfoot></tfoot>
                 </table>
         
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-        let xhr= new XMLHttpRequest();
-        //function definiton 
-        //function definition is a one time process
-            function getOutput(e){ //this ia a formal argument
-            e.preventDefault(); //object.method() //to prevent page reloading
-                     console.log("User Stored");
-                     console.log(e.target.closest('form'));//traversing up
-                     console.log(e.target.closest('form').querySelector('input[name="Username"]').value);//traversing down
-        //Declaration of variable
-        let Username = e.target.closest('form').querySelector('input[name="Username"]').value;
-        //to convert js object into JSON
-        let data = JSON.stringify({
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let xhr = new XMLHttpRequest();
+
+        // Function definition - called on form submission
+        function getOutput(e) {
+            e.preventDefault(); // Prevent page reloading
+
+             console.log("User Stored");
+             console.log(e.target.closest('form')); // Traversing up to the form
+             console.log(e.target.closest('form').querySelector('input[name="Username"]').value); // Traversing down to get value
+
+            // Get the Username value
+            let Username = e.target.closest('form').querySelector('input[name="Username"]').value;
+
+            // Convert JS object to JSON string
+            let data = JSON.stringify({
                 data: {
-                     "Username": `${Username}` //property:value;
+                    "Username": `${Username}`
                 }
             });
 
-        //ceo.open(method, endpoint,true);
-        xhr.open("POST","http://localhost:1337/api/details", true); //by local url            
-        //xhr.open("POST","https://647f-2401-4900-7ce0-cb50-d107-d99b-44d9-753a.ngrok-free.app/api/details", true); //by Public url
-        xhr.setRequestHeader("Content-Type", "application/json");//headers
+            // Open POST request to local Strapi endpoint
+            xhr.open("POST", "http://localhost:1337/api/details", true);
+            // xhr.open("POST", "https://647f-2401-4900-7ce0-cb50-d107-d99b-44d9-753a.ngrok-free.app/api/details", true);
 
-                
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 201 || this.status == 200) { //cio = this
-                 Swal.fire({
-                 title: "Your Data is Stored Successfully!",
-                 text: "You clicked the button!",
-                 icon: "Logged in"
-            });//&& - logical operator AND 
-            //&& - when ( Both conditions are true)
-            }
-        }
+            xhr.setRequestHeader("Content-Type", "application/json"); // Set content type header
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+                    Swal.fire({
+                        title: "Your Data is Stored Successfully!",
+                        text: "You clicked the button!",
+                        icon: "success"
+                    });
+                }
+            };
+
+            // Send data to Strapi
+            xhr.send(data);
+
+             console.log(data);
+             console.log("User Stored successfully");
+        } 
+    </script>
+
+    <script>
+        // Read operations with Ajax (XMLHttpRequest)
         
-        //sending data to the strapi/browser
-        xhr.send(data);
-
-                     console.log(data);
-                     console.log("User Stored successfully");
-        
-        }
-        </script>
-        <script>
-
-        //read operations with Ajax i,e. XMLHttpRequest class
-        //IIFE ()();
-        (()=>{
-                     console.log("okay");
+        // IIFE - Immediately Invoked Function Expression
+        (() => {
+             console.log("okay");
         })();
 
-        //ceo.open(method,endpoint,true);
-        xhr.open("GET","http://localhost:1337/api/details", true); //by local url
-        
-        //CBFN
-        xhr.onreadystatechange=function(){
-            //to get data
-            if (this.readyState == 4 && this.status == 200 ) { //cio = this
-                     console.log(this.responseText);
-                     console.log(JSON.parse(this.responseText));//to take response in the form of text
+        // Open GET request to local Strapi endpoint
+        xhr.open("GET", "http://localhost:1337/api/details", true);
 
-        //to convert JSON into string
-        var json=JSON.parse(this.responseText);
-                        
-        //accessing the table by id          
-        var tbody =document.getElementById('MyTable').querySelector('tbody');
-                     console.log(tbody);
-        tbody.innerHTML='';
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                 console.log(this.responseText);
+                 console.log(JSON.parse(this.responseText));
 
-        //using for of loop 
-        //for (variable of iterable){}
-            for(variable of json.data){
-                        console.log(variable.Username);
-                    
-            tbody.innerHTML +=`
-            <tr>
-                <td >${variable.Username}</td> 
-                <td>
-                    <button type="button" class="btn btn-success btn-sm">View</button>
-                    <button type="button" class="btn btn-secondary btn-sm" >Copy</button>
-                    <button type="button" class="btn btn-info btn-sm">Edit</button>
-                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>`
+                let json = JSON.parse(this.responseText);
+
+                // Access the table by ID
+                let tbody = document.getElementById('MyTable').querySelector('tbody');
+                 console.log(tbody);
+                tbody.innerHTML = '';
+
+                // Populate table with data
+                for (let variable of json.data) {
+                     console.log(variable.Username);
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${variable.Username}</td> 
+                            <td>
+                                 <button type="button" class="btn btn-success btn-sm">View</button>
+                                 <button type="button" class="btn btn-secondary btn-sm">Copy</button>
+                                 <button type="button" class="btn btn-info btn-sm">Edit</button>
+                                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                        </tr>`;
+                }
             }
-          }
-        }
-        
-        //sending information to the server
-        xhr.send();
-            
+        };
 
-        </script>
+        // Send GET request
+        xhr.send();
+    </script>
+
 </html>
